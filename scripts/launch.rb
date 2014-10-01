@@ -248,10 +248,10 @@ class Calabash::Cucumber::Launcher
       if device_tgt
         args[:device_target] = args[:udid] = device_tgt
       else
-        args[:device_target] = 'simulator'
+        args[:device_target] = 'iPhone 6 (8.0 Simulator)'
       end
     else
-      args[:device_target] = 'simulator'
+      args[:device_target] = device_env + ' (8.0 Simulator)'
     end
 
     args
@@ -315,14 +315,14 @@ class Calabash::Cucumber::Launcher
         args[:app] = File.expand_path(args[:app])
       else
         # args[:app] is not a directory so must be a bundle id
-        if args[:device_target] == 'simulator' ## bundle id set, but simulator target
+        if args[:device_target] == 'simulator' || args[:device_target] =~ /Simulator/ ## bundle id set, but simulator target
           args[:app] = app_path || detect_app_bundle_from_args(args)
         end
       end
     end
 
     unless args[:app]
-      if args[:device_target]=='simulator'
+      if args[:device_target] == 'simulator' || args[:device_target] =~ /Simulator/
         device_xamarin_build_dir = 'iPhoneSimulator'
       else
         device_xamarin_build_dir = 'iPhone'
@@ -339,7 +339,7 @@ class Calabash::Cucumber::Launcher
 
 
     if args[:privacy_settings]
-      if args[:device_target]=='simulator'
+      if args[:device_target] == 'simulator' || args[:device_target] =~ /Simulator/
         update_privacy_settings(args[:bundle_id], args[:privacy_settings])
       else
         #Not supported on device
@@ -384,7 +384,7 @@ class Calabash::Cucumber::Launcher
   end
 
   def detect_app_bundle_from_args(args)
-    if args[:device_target]=='simulator'
+    if args[:device_target] == 'simulator' || args[:device_target] =~ /Simulator/
       device_xamarin_build_dir = 'iPhoneSimulator'
     else
       device_xamarin_build_dir = 'iPhone'
@@ -411,7 +411,8 @@ class Calabash::Cucumber::Launcher
 
   def new_run_loop(args)
     if RunLoop::Core.above_or_eql_version?('5.1', RunLoop::Core.xcode_version)
-      Calabash::Cucumber::SimulatorHelper.stop
+      launcher = Calabash::Cucumber::Launcher.new
+      launcher.simulator_launcher.stop
     end
     last_err = nil
     5.times do
@@ -422,10 +423,12 @@ class Calabash::Cucumber::Launcher
         if ENV['CALABASH_FULL_CONSOLE_OUTPUT'] == '1'
           puts 'retrying run loop...'
         end
-        Calabash::Cucumber::SimulatorHelper.stop
+        launcher = Calabash::Cucumber::Launcher.new
+        launcher.simulator_launcher.stop
       end
     end
-    Calabash::Cucumber::SimulatorHelper.stop
+    launcher = Calabash::Cucumber::Launcher.new
+    launcher.simulator_launcher.stop
     puts "Unable to start. Make sure you've set APP_BUNDLE_PATH to a build supported by this simulator version"
     raise StartError.new(last_err)
   end
@@ -532,7 +535,7 @@ class Calabash::Cucumber::Launcher
   end
 
   def simulator_target?
-    ENV['DEVICE_TARGET'] == 'simulator'
+    ENV['DEVICE_TARGET'] == 'simulator' || ENV['DEVICE_TARGET'] =~ /Simulator/
   end
 
   def sdk_version

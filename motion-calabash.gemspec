@@ -7,12 +7,12 @@ Gem::Specification.new do |s|
   s.author = 'Karl Krukow'
   s.email = 'karl.krukow@xamarin.com'
   s.homepage = 'http://www.xamarin.com'
-  s.version = '0.9.168'
+  s.version = '0.10.2'
   s.summary = %q{Calabash support for RubyMotion}
   s.description = %q{This linkes-in calabash for iOS}
-  s.files = ["lib/framework/libcalabashuni-0.9.168.a"].concat(`git ls-files`.split("\n"))
+  s.files = ["lib/framework/calabash-combined.a"].concat(`git ls-files`.split("\n"))
   s.require_paths = ["lib"]
 
-  s.add_dependency("calabash-cucumber", "0.9.168")
+  s.add_dependency("calabash-cucumber", "0.10.2")
 
 end

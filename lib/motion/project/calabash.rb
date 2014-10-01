@@ -34,13 +34,13 @@ namespace 'calabash' do
 
   # Retrieve optional Calabash args.
   def gather_calabash_env
-    sdk = ENV['target'] || ENV['sdk'] || ENV['SDK_VERSION'] || "7.1" #Calabash env vars
+    sdk = ENV['target'] || ENV['sdk'] || ENV['SDK_VERSION'] || "8.0" #Calabash env vars
      major = sdk[0]
      os = ENV['os'] || ENV['OS']
      if os.nil?
        os = "ios#{major}"
      end
-     device = ENV['device_family'] || ENV['device'] || ENV['DEVICE'] || 'iphone' #Calabash env vars
+     device = ENV['device_family'] || ENV['device'] || ENV['DEVICE'] || 'iPhone 6' #Calabash env vars
      {"SDK_VERSION" => sdk, "OS" => os, "DEVICE" => device}
   end
 
