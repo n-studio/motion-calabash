@@ -31,7 +31,7 @@ require 'cfpropertylist'
 
 class Calabash::Cucumber::Launcher
 
-  KNOWN_PRIVACY_SETTINGS = {:photos => 'kTCCServicePhotos', :calendar => 'kTCCServiceCalendar', :address_book => 'kTCCServiceAddressBook'}
+  # KNOWN_PRIVACY_SETTINGS = {:photos => 'kTCCServicePhotos', :calendar => 'kTCCServiceCalendar', :address_book => 'kTCCServiceAddressBook'}
 
   attr_accessor :run_loop
   attr_accessor :device
@@ -244,7 +244,6 @@ class Calabash::Cucumber::Launcher
       if detect_connected_device? && (device_tgt.nil? || device_tgt.downcase == 'device')
         device_tgt = RunLoop::Core.detect_connected_device
       end
-
       if device_tgt
         args[:device_target] = args[:udid] = device_tgt
       else
@@ -252,6 +251,17 @@ class Calabash::Cucumber::Launcher
       end
     else
       args[:device_target] = device_env + ' (8.0 Simulator)'
+      
+      # Resizable iPad (8.0 Simulator)
+      # Resizable iPhone (8.0 Simulator)
+      # iPad 2 (8.0 Simulator)
+      # iPad Air (8.0 Simulator)
+      # iPad Retina (8.0 Simulator)
+      # iPhone 4s (8.0 Simulator)
+      # iPhone 5 (8.0 Simulator)
+      # iPhone 5s (8.0 Simulator)
+      # iPhone 6 (8.0 Simulator)
+      # iPhone 6 Plus (8.0 Simulator)
     end
 
     args
@@ -352,7 +362,7 @@ class Calabash::Cucumber::Launcher
       self.actions= Calabash::Cucumber::InstrumentsActions.new
     else
       # run with sim launcher
-      sdk = sdk_version || SimLauncher::SdkDetector.new().available_sdk_versions.reverse.find { |x| !x.start_with?('7') }
+      sdk = sdk_version || SimLauncher::SdkDetector.new().available_sdk_versions.reverse.find { |x| !x.start_with?('8') }
       path = Calabash::Cucumber::SimulatorHelper.app_bundle_or_raise(app_path)
       self.actions= Calabash::Cucumber::PlaybackActions.new
       Calabash::Cucumber::SimulatorHelper.relaunch(path, sdk, args[:device].to_s, args)
@@ -412,7 +422,7 @@ class Calabash::Cucumber::Launcher
   def new_run_loop(args)
     if RunLoop::Core.above_or_eql_version?('5.1', RunLoop::Core.xcode_version)
       launcher = Calabash::Cucumber::Launcher.new
-      launcher.simulator_launcher.stop
+      launcher.simulator_launcher.stop if launcher.simulator_launcher && !launcher.calabash_no_stop?
     end
     last_err = nil
     5.times do
@@ -424,11 +434,11 @@ class Calabash::Cucumber::Launcher
           puts 'retrying run loop...'
         end
         launcher = Calabash::Cucumber::Launcher.new
-        launcher.simulator_launcher.stop
+        launcher.simulator_launcher.stop if launcher.simulator_launcher && !launcher.calabash_no_stop?
       end
     end
     launcher = Calabash::Cucumber::Launcher.new
-    launcher.simulator_launcher.stop
+    launcher.simulator_launcher.stop if launcher.simulator_launcher && !launcher.calabash_no_stop?
     puts "Unable to start. Make sure you've set APP_BUNDLE_PATH to a build supported by this simulator version"
     raise StartError.new(last_err)
   end
