@@ -33,7 +33,7 @@ The +scaffold+ target will generate the file structure and launch hooks needed t
   $ krukow:~/github/rubymotion-inspect$ rake calabash:scaffold
     Run Scaffolding features
     Info Run rake calabash:run to try
-    Copy launch file /Users/krukow/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/motion-calabash-0.10.1/scripts/launch.rb to features/support/launch.rb
+    Copy launch file /Users/krukow/.rbenv/versions/1.9.3-p194/lib/ruby/gems/1.9.1/gems/motion-calabash-0.11.0/scripts/launch.rb to features/support/launch.rb
 
   $ krukow:~/github/rubymotion-inspect$ tree features
     features
